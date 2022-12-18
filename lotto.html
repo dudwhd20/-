@@ -4,47 +4,59 @@
   <head>
     <meta charset="UTF-8">
     <title>로또 추첨기</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
   </head>
 
+  <style>
+    #show{display: flex; justify-content: center; margin-top: 200px;}
+    #btnDiv{display: flex; justify-content: center; margin-top: 200px;}
+  </style>
+
   <body>
-    <div id="show"></div>
+    <section id="container">
+      <div id="show"></div>
+
+      <div id="btnDiv">
+        <button id="playBtn">번호 생성</button>
+      </div>
+
+    </section>
+
     <script>
-      const candidates = [];
-      for (i = 1; i <= 45; i += 1) {
-        candidates.push(i);
+      let show = document.querySelector('#show');
+      let numArr = [];
+
+      let init = function(){
+        numArr = [];
+
+        while (numArr.length < 6) {
+          let num = Math.floor((Math.random() * (45 - 1)) + 1);
+
+          // console.log("test : " +  num);
+          if (numArr.find(e => e === num)) {
+            // console.log("continue");
+            continue;
+          }
+          // console.log("pass");
+
+          numArr.push(num);
+
+        }
+
       }
 
-      //숫자 섞기
-      let mixedNum = [];
-      while (candidates.length > 0) {
-        let num = Math.floor(Math.random() * candidates.length); //0-44까지의 정수
-        //candidates에서 num을 splice()로 하나씩 빼줌
-        let leftNum = candidates.splice(num, 1)[0]; //leftNum 배열이므로 [0]
-        mixedNum.push(leftNum);
+      let btnEvent = function(){
+        show.innerHTML = '';
+        init();
+
+        for (const num of numArr) {
+          showFn(num)
+        }
+
       }
-      console.log(mixedNum);
-      let bonus = mixedNum[mixedNum.length - 1] //mixedNum의 마지막 숫자
-      console.log(bonus);
 
-
-      //slice() 예제
-      let lottoNum = mixedNum.slice(0, 6).sort((prev, curr) => prev - curr); //배열의 0-5번째 요소 추출
-      console.log(lottoNum);
-      //prev - curr 뺀 결과가 양수면 순서를 바꿈. 음수면 그대로.
-
-
-      //splice() 예제
-      let lottoNum2 = mixedNum.splice(0, 6); //배열의 0부터 6개의 요소 추출
-      console.log(lottoNum2);
-      console.log(lottoNum2);
-
-
-      console.log(`로또숫자 ${lottoNum} / 보너스 숫자 ${bonus}`)
-
-      //로또 화면 출력
-      let show = document.querySelector("#show");
-
-      function showFn(num, show) {
+      let showFn  = function(num) {
+        let show = document.querySelector('#show');
         let ball = document.createElement('span');
         //ball.textContent = lottoNum[num];
         ball.textContent = num;
@@ -68,15 +80,14 @@
         ball.style.margin = '10px';
         ball.style.padding = '15px';
         ball.style.borderRadius = '50%';
-        ball.className = 'No' + lottoNum[num];
+        // ball.className = 'No' + lottoNum[num];
 
-      };
-
-      for (let i = 0; i < lottoNum.length; i += 1) {
-        showFn(lottoNum[i], show);
       }
-      showFn(bonus, show);        
 
+      document.addEventListener("DOMContentLoaded", function(){
+        let playBtn = document.getElementById('playBtn');
+        playBtn.addEventListener('click', btnEvent);
+      });
     </script>
   </body>
 
